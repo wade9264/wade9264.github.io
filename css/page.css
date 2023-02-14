@@ -1,0 +1,27 @@
+.page #page {
+  padding: 0;
+  background: unset;
+  box-shadow: unset;
+}
+.flink h2 {
+  margin: 0;
+}
+#footer-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#footer-wrap .footer-box {
+  width: 100%;
+  max-width: 1400px;
+}
+#footer-wrap .footer-box .copyright {
+  float: left;
+}
+#footer-wrap .footer-box .framework-info {
+  float: right;
+}
+#footer-wrap .footer-box a {
+  font-weight: 700;
+}

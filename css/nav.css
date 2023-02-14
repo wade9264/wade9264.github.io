@@ -1,0 +1,329 @@
+#nav #blog-info {
+  display: none;
+}
+#nav.show {
+  font-size: 1.3em;
+}
+#page-header.not-top-img {
+  margin-bottom: 0rem;
+  height: 60px;
+  background: 0px center;
+}
+#page-header {
+  /* background-image: none !important; */
+  display: flex;
+  justify-content: center;
+}
+#page-header {
+  position: relative;
+  width: 100%;
+  transition: all 0.3s ease 0s;
+}
+#rightside {
+  transition: all 0.3s;
+}
+#page-header #nav #nav-group {
+  max-width: 1400px;
+  width: 100%;
+  display: flex;
+  position: relative;
+  padding: 0 1.5rem;
+  align-items: center;
+}
+#page-header.not-top-img #nav {
+  transition: 0.1s;
+  background: var(--heo-card-bg);
+  border-bottom: 1px solid var(--heo-card-border);
+}
+#page-header.not-top-img:not(.nav-fixed) #nav {
+  background: var(--heo-none);
+  transition: 0.1s;
+  border-bottom: 1px solid var(--heo-none);
+}
+#page-header.nav-fixed > #nav,
+#page-header.not-top-img > #nav {
+  box-shadow: none;
+}
+#page-header #nav {
+  box-shadow: none;
+  transition: 0s;
+  display: flex;
+  justify-content: center;
+  z-index: 1000 !important;
+}
+#nav #blog_name {
+  flex-wrap: nowrap;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  z-index: 102;
+  transition: 0.3s;
+}
+@media screen and (min-width: 900px) {
+  #page-name-mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    left: 0;
+  }
+}
+#nav #menus {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  height: 60px;
+  left: 0;
+  margin: 0;
+}
+#nav .menus_items {
+  position: relative;
+  width: fit-content;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#nav .menus_items .menus_item {
+  padding: 0 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+}
+#menus > div.menus_items > div > a {
+  letter-spacing: 0.3rem;
+  padding-left: 0.7rem;
+  font-weight: bold;
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 40px;
+}
+#nav .menus_items .menus_item i.expand {
+  display: none;
+}
+#nav .menus_items .menus_item i.expand {
+  padding: 4px;
+  transition: transform 0.3s ease 0s;
+}
+.fa-solid,
+.fas {
+  font-weight: 900;
+}
+
+.fa-classic,
+.fa-regular,
+.fa-solid,
+.far,
+.fas {
+  font-family: "Font Awesome 6 Free";
+}
+.fa,
+.fa-brands,
+.fa-classic,
+.fa-regular,
+.fa-sharp,
+.fa-solid,
+.fab,
+.far,
+.fas {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+}
+#nav .site-page {
+  position: relative;
+  padding: 0.4rem;
+  text-shadow: rgb(0 0 0 / 30%) 0.05rem 0.05rem 0.1rem;
+  font-size: 0.78em;
+  cursor: pointer;
+}
+.page #nav a:hover {
+  color: var(--heo-white) !important;
+  background: var(--heo-main);
+  transition: 0.3s;
+  box-shadow: var(--heo-shadow-main);
+}
+#menus > div.menus_items > div > a {
+  letter-spacing: 0.3rem;
+  padding-left: 0.7rem;
+  font-weight: bold;
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 40px;
+}
+#nav #site-name {
+  color: var(--heo-fontcolor);
+  padding: 0;
+  transition: 0.3s;
+  display: flex;
+  height: 35px;
+  width: 75px;
+  justify-content: center;
+  align-items: center;
+  text-shadow: none;
+  border-radius: 40px;
+}
+.heoicon {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+}
+.icon-heologo:before {
+  content: "WHY";
+}
+.page header:before {
+  content: unset;
+}
+.post .icon-heologo:before {
+  content: "WHY";
+  /* color: var(--light-grey); */
+}
+.post .nav-fixed .icon-heologo:before {
+  color: var(--font-color);
+}
+.page #nav a:hover {
+  color: var(--heo-white) !important;
+  background: var(--heo-main);
+  transition: 0.3s;
+  box-shadow: var(--heo-shadow-main);
+}
+#nav #site-name i {
+  font-size: 18px;
+  line-height: 35px;
+  padding: 0 12px;
+}
+#nav #site-name:hover i {
+  color: var(--heo-white);
+}
+#page-header.not-top-img #nav a {
+  color: var(--heo-fontcolor);
+  text-shadow: none;
+}
+#nav #site-name i.fa-solid.fa-house {
+  display: none;
+}
+@media screen and (min-width: 900px) {
+  #nav #site-name {
+    opacity: 1;
+    transition: 0.3s;
+    overflow: hidden;
+  }
+  #nav #site-name i {
+    transition: 0.3s;
+  }
+  #nav #site-name:hover i.heoicon {
+    display: none;
+    opacity: 0;
+    transition: 0.3s;
+  }
+  #nav #site-name:hover i.fa-solid.fa-house {
+    display: block;
+    opacity: 1;
+    transition: 0.3s;
+  }
+  /* #nav #site-name:after {
+    background: url(https://img.zhheo.com/i/2022/08/31/630efbc7e1ca6.webp)
+      no-repeat 50% 50%;
+    opacity: 0;
+    position: absolute;
+    display: flex;
+    z-index: 1;
+    width: 74px;
+    height: 58px;
+    content: "";
+    transition: 0s;
+    transition-timing-function: ease-in;
+    transform: scale(0.4);
+  }
+  #nav #site-name:hover:after {
+    opacity: 1;
+    transform: translateY(0px) scale(0.3);
+    transition-timing-function: ease-in;
+  } */
+}
+#page-header #nav #nav-right {
+  position: absolute;
+  right: 0;
+  z-index: 102;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  align-items: center;
+  margin-right: 1.5rem;
+  overflow: hidden;
+}
+#page-header #nav #nav-right div {
+  margin-left: 0.5rem;
+  padding: 0;
+}
+#page-header #nav #nav-right .nav-button a,
+#page-header #nav #nav-left .nav-button a {
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+}
+.nav-button {
+  cursor: pointer;
+}
+#page-header.not-top-img #nav .back-home-button {
+  color: var(--heo-fontcolor);
+}
+.post .nav-fixed .back-home-button {
+  color: var(--font-color);
+}
+.back-home-button {
+  display: flex;
+  width: 35px;
+  height: 35px;
+  padding: 0 !important;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+  transition: 0.3s;
+  border-radius: 8px;
+  color: var(--heo-white);
+  border-radius: 40px;
+}
+.back-home-button:hover {
+  background: var(--heo-main);
+  color: var(--heo-white) !important;
+  cursor: pointer;
+}
+@media screen and (min-width: 900px) {
+  #nav .back-home-button:hover {
+    box-shadow: var(--heo-shadow-main);
+  }
+}
+
+.post #nav a:hover {
+  color: var(--heo-white) !important;
+  background: var(--heo-main);
+  transition: 0.3s;
+  box-shadow: var(--heo-shadow-main);
+}
+#page-header,
+#nav.show {
+  transition: unset;
+  animation: unset;
+}
+.post .post-bg {
+  /* filter: blur(10px); */
+}
+.post .post-info {
+  filter: unset;
+}

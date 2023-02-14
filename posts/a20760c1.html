@@ -1,0 +1,782 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Tampermonkey油猴脚本编写指南 | WHY's Blog</title><meta name="author" content="WHY"><meta name="copyright" content="WHY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言 本文首发于我的博客和其乐论坛，未经授权禁止转载 本文全程使用原生 JavaScript 进行编程，不使用像 jQuery 这样的第三方库  视频链接零基础油猴脚本编写指南【上】 （对应 0x01~0x05）  0x00 前置知识 本节简单的介绍一下一些名词的概念，了解为主，直接跳过也是可以的   HTML、CSS 和 JS HTML 即超文本标记语言，它用来描述各种网页元素，类似与一份清单，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tampermonkey油猴脚本编写指南">
+<meta property="og:url" content="https://wade9264.github.io/posts/a20760c1.html">
+<meta property="og:site_name" content="WHY&#39;s Blog">
+<meta property="og:description" content="前言 本文首发于我的博客和其乐论坛，未经授权禁止转载 本文全程使用原生 JavaScript 进行编程，不使用像 jQuery 这样的第三方库  视频链接零基础油猴脚本编写指南【上】 （对应 0x01~0x05）  0x00 前置知识 本节简单的介绍一下一些名词的概念，了解为主，直接跳过也是可以的   HTML、CSS 和 JS HTML 即超文本标记语言，它用来描述各种网页元素，类似与一份清单，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220514.jpg">
+<meta property="article:published_time" content="2020-06-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-09T14:23:45.195Z">
+<meta property="article:author" content="WHY">
+<meta property="article:tag" content="Tampermonkey">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220514.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://wade9264.github.io/posts/a20760c1.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Tampermonkey油猴脚本编写指南',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-09 22:23:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/theme.css?v1"><link rel="stylesheet" href="/css/style.css?v1"><link rel="stylesheet" href="/css/nav.css?v1"><link rel="stylesheet" href="/css/page.css?v1"><link rel="stylesheet" href="/css/post.css?v1"><link rel="stylesheet" href="/css/about.css?v1"><link rel="stylesheet" href="/css/movies.css?v1"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-double-row-display@1.00/cardlistpost.min.css"/>
+<style>#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags:before {content:"\A";
+  white-space: pre;}#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags > .article-meta__separator{display:none}</style>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="WHY's Blog" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="/css/progress_bar.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js/pace.min.js"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><span> 文库</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><span> 工具</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 我的</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220514.jpg')"><nav class="fixed" id="nav"><span id="blog-info"><a href="/" title="WHY's Blog"></a></span><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="back-home-button-icon fas fa-grip-vertical"></i></div><a id="site-name" href="/" title="首页"><i class="heoicon icon-heologo"></i><i class="fa-solid fa-house"></i></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><span> 文库</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><span> 工具</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 我的</span></a></div></div></div><div id="nav-right"><div class="nav-button" id="search-button"><a class="site-page social-icon search" title="搜索"><i class="fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="mode-button"><a class="site-page" title="浅色和深色模式转换" onclick="switchDarkMode()"><i class="fa-solid fa-moon"></i></a></div><div class="nav-button" id="top-button"><a class="site-page" title="回到顶部" onclick="btf.scrollToDest(0,500)"><i class="fa-solid fa-angles-up"></i></a></div></div></div></nav><div class="coverdiv loaded" id="coverdiv"><img class="nolazyload entered loading" id="post-cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220514.jpg" alt="cover" data-ll-status="loading"></div><div id="post-info"><div class="meta-firstline"><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><span class="post-meta-separator"></span><div class="post-meta-tags-list"><a class="post-meta-tags" href="/tags/Tampermonkey/">Tampermonkey</a><span class="post-meta-separator">       </span></div></div><h1 class="post-title">Tampermonkey油猴脚本编写指南</h1><div class="meta-secondline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2020-06-11T16:00:00.000Z" title="发表于 2020-06-12 00:00:00">2020-06-12</time></span><span class="post-meta-pv-cv" id="" data-flag-title="Tampermonkey油猴脚本编写指南"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>本文首发于<a target="_blank" rel="noopener" href="https://blog.chrxw.com/">我的博客</a>和<a target="_blank" rel="noopener" href="https://keylol.com/">其乐论坛</a>，未经授权禁止转载</p>
+<p>本文全程使用原生 JavaScript 进行编程，不使用像 jQuery 这样的第三方库</p>
+</blockquote>
+<h2 id="视频链接"><a href="#视频链接" class="headerlink" title="视频链接"></a>视频链接</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ar4y1P7Er">零基础油猴脚本编写指南【上】</a> （对应 0x01~0x05）</p>
+<hr>
+<h2 id="0x00-前置知识"><a href="#0x00-前置知识" class="headerlink" title="0x00 前置知识"></a>0x00 前置知识</h2><blockquote>
+<p>本节简单的介绍一下一些名词的概念，了解为主，直接跳过也是可以的</p>
+</blockquote>
+<ol>
+<li><p>HTML、CSS 和 JS</p>
+<p>HTML 即超文本标记语言，它用来描述各种网页元素，类似与一份清单，浏览器读取以后根据它来加载对应的资源</p>
+<p>CSS 即层叠样式表，它只用来描述网页元素的外观，还可以添加少许动画，但是不影响功能</p>
+<p>JS 即 JavaScript，它是一种网页脚本语言，用来让静态的网页能够响应各种动作，<del>还可以挖矿</del></p>
+<p>如果把 HTML 比作木偶，那么 CSS 就是木偶的衣服，JS 就是木偶的提线，用来操控木偶</p>
+</li>
+<li><p>油猴和浏览器</p>
+<p>当你访问链接的时候，浏览器会先下载链接对应的文件（通常是一个 HTML 文件），然后根据 HTML 描述的对象列表，来下载图片、视频等资源，有的 CSS 和 JS 内嵌在 HTML 文件里，有的则是单独的文件，等必要的资源加载完成以后，浏览器才能生成可以交互的网页</p>
+<p>油猴实际上是一个加载器，它把用户脚本安插在最开始获取到的 HTML 文件中，这样浏览器加载网页的时候，也会加载特定的用户脚本，这样我们就能够通过编写用户脚本来修改网页了</p>
+</li>
+<li><p>HTML5 和 DOM</p>
+<p>HTML5 是现行的 HTML 标准，DOM 即文档对象模型，是一用对象表示 HTML 标签的方法，通过 DOM，我们可以简单的修改文档对象的属性，来轻松修改 HTML 标签的内容</p>
+</li>
+</ol>
+<hr>
+<h2 id="0x01-初识开发者工具"><a href="#0x01-初识开发者工具" class="headerlink" title="0x01 初识开发者工具"></a>0x01 初识开发者工具</h2><blockquote>
+<p>工欲善其事必先利其器，本节简单的介绍一下开发者工具的使用。</p>
+<p>本节以我的博客作为演示，地址：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/">chrxw.com</a></p>
+</blockquote>
+<blockquote>
+<p>个人比较喜欢 Firefox 的开发者工具，以下介绍均使用 Firefox 进行演示，如果使用 Chrome 的话可能布局会有细微差异，不过功能是类似的。</p>
+<p>Chrome 自带的开发者工具貌似没有汉化，建议使用别的 Chromium 内核的浏览器（比如新版 Edge），功能都差不多。</p>
+</blockquote>
+<ul>
+<li><p>在浏览器中按<code>F12</code>即可打开开发者工具</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/492353909.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/492353909.png" alt="开发者工具"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/492353909.png">开发者工具</a></p>
+</li>
+<li><p>查看器，左侧可以查看页面的 HTML 内容，右侧显示的是选中的 DOM 元素的 CSS</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/87191902.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/87191902.png" alt="查看器"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/87191902.png">查看器</a></p>
+</li>
+<li><p>控制台，可以运行自己编写的 JS 代码。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1632548203.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1632548203.png" alt="控制台"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1632548203.png">控制台</a></p>
+<p>也可以在设置里打开“分离式控制台”，这样就可以在所有 TAB 里都显示控制台了。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3446722376.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3446722376.png" alt="分离式控制台"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3446722376.png">分离式控制台</a></p>
+</li>
+<li><p>调试器，可以用来单步调试 JS</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2819994569.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2819994569.png" alt="调试器"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2819994569.png">调试器</a></p>
+</li>
+<li><p>网络，可以查看浏览器的网络请求</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1376340131.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1376340131.png" alt="网络"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1376340131.png">网络</a></p>
+</li>
+<li><p>储存，在这个 TAB 中可以查看网站在本地保存的内容，最常用的是 Cookie，其次是 LocalStorge（本地储存），还有个由浏览器自动管理的 Session（会话储存），JS 可以访问的只有 Cookie 和 LocalStorge。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/592149356.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/592149356.png" alt="储存 Cookie"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/592149356.png">储存 Cookie</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1921060360.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1921060360.png" alt="储存 LocalStorge"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1921060360.png">储存 LocalStorge</a></p>
+</li>
+</ul>
+<hr>
+<h2 id="0x02-初识-DOM"><a href="#0x02-初识-DOM" class="headerlink" title="0x02 初识 DOM"></a>0x02 初识 DOM</h2><blockquote>
+<p>本节通过使用开发者工具，简单的演示一下如何操作 DOM 元素，以我的博客作为演示，地址：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/">chrxw.com</a></p>
+</blockquote>
+<ul>
+<li><p>首先打开开发者工具，然后激活选择器，然后点击“标题”，这样在右边的查看器中就会显示我们点击的对象</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1627186572.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1627186572.png" alt="选中“标题”元素"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1627186572.png">选中“标题”元素</a></p>
+</li>
+<li><p>右键高亮的元素，然后点击“在控制台使用”（如果是 Chromium 或者 Chrome，点击“复制”/“Copy”-&gt;“复制 JS 路径”/“Copy JS path”，然后把复制结果粘贴到控制台中）</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/968354769.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/968354769.png" alt="在控制台使用"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/968354769.png">在控制台使用</a></p>
+</li>
+<li><p>Firefox 自动创建了一个<code>temp0</code>变量，按一下回车，可以看到控制台输出了一个 DOM 元素，点一下左边的箭头展开，可以看到这个对象的各种属性。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/932069996.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/932069996.png" alt="“temp0”对象的属性"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/932069996.png">“temp0”对象的属性</a></p>
+</li>
+<li><p>接下来我们尝试修改一下它的内容</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">temp0.<span class="property">textContent</span> = <span class="string">&quot;hello world&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>按回车执行，然后可以看到，网页的标题已经被修改了</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3990911643.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3990911643.png" alt="标题变成了“hello world”"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3990911643.png">标题变成了“hello world”</a></p>
+</li>
+<li><p>接着我们修改一下 CSS，让它居中显示</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">temp0.<span class="property">style</span>.<span class="property">textAlign</span> = <span class="string">&quot;center&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3390245185.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3390245185.png" alt="标题居中显示"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3390245185.png">标题居中显示</a></p>
+</li>
+<li><p>接下来我们创建一个新的 DOM 元素，然后插入到网页中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> btn = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>);</span><br><span class="line">btn.<span class="property">textContent</span> = <span class="string">&quot;按钮&quot;</span>;</span><br><span class="line">btn.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">temp0.<span class="title function_">appendChild</span>(btn);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>点一下新出现的按钮，可以看到消息弹窗</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1274148455.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1274148455.png" alt="代码运行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1274148455.png">代码运行效果</a></p>
+<p>代码讲解：</p>
+<blockquote>
+<p>PS： document 也是 DOM 元素，它代表整个网页，其他 DOM 元素都是它的子集。</p>
+</blockquote>
+<ul>
+<li><p>```javascript<br>let btn = document.createElement(“button”);<br>btn.textContent = “按钮”;</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  **JavaScript**</span><br><span class="line"></span><br><span class="line">  _复制_</span><br><span class="line"></span><br><span class="line">  这两行代码创建了一个`button`对象，它内部的文本为`按钮`，由浏览器自动生成的 HTML 表达式为`&lt;button&gt;按钮&lt;/button&gt;`</span><br><span class="line"></span><br><span class="line">- ```javascript</span><br><span class="line">  btn.addEventListener(&quot;click&quot;, () =&gt; &#123;</span><br><span class="line">    alert(&quot;hello world&quot;);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>这三行代码为<code>btn</code>对象添加了事件监听器，<code>addEventListener</code>的第一个参数是事件监听器的名称，第二个参数是接收到指定事件后调用的函数，<code>()=&gt;&#123; ... &#125;</code>是匿名函数的缩略写法，匿名函数还有另一种等效写法<code>function()&#123; ... &#125;</code>，或者写成普通函数，也是可以的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//匿名函数写法2</span></span><br><span class="line">btn.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//普通函数的写法</span></span><br><span class="line">btn.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, foo); <span class="comment">//foo后面不加()</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>添加好事件监听器以后，点一下按钮，就会触发<code>click</code>事件，然后由浏览器调用我们绑定的方法<code>alert(&#39;hello world&#39;);</code>，弹出消息框</p>
+</li>
+<li><p>```javascript<br>temp0.appendChild(btn);</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">**JavaScript**</span><br><span class="line"></span><br><span class="line">_复制_</span><br><span class="line"></span><br><span class="line">`A.appendChild(B)`的作用是把 B 元素插入到 A 元素的子元素的末尾，也就是把`btn`对象插到`temp0`中，由浏览器自动帮我们修改了 HTML 文本</span><br><span class="line"></span><br><span class="line">```html</span><br><span class="line">//修改前</span><br><span class="line">&lt;h1 class=&quot;m-n font-thin text-black l-h&quot;&gt;Chr_小屋&lt;/h1&gt;</span><br><span class="line">//修改后</span><br><span class="line">&lt;h1 class=&quot;m-n font-thin text-black l-h&quot;&gt;</span><br><span class="line">  Chr_小屋 &lt;button&gt;按钮&lt;/button&gt; //这是我们新创建的DOM元素</span><br><span class="line">&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>HTML</strong></p>
+<p><em>复制</em></p>
+</li>
+</ul>
+</li>
+<li><p>通过操作 DOM 元素的属性，就可以很方便的修改网页的显示效果，添加各种功能。</p>
+</li>
+</ul>
+<hr>
+<h2 id="0x03-DOM-进阶之获取-DOM-元素"><a href="#0x03-DOM-进阶之获取-DOM-元素" class="headerlink" title="0x03 DOM 进阶之获取 DOM 元素"></a>0x03 DOM 进阶之获取 DOM 元素</h2><blockquote>
+<p>通过修改 DOM 元素的属性，可以很方便地修改网页，但是首先我们得获取我们想要修改的 DOM 元素</p>
+<p>本节将会介绍如何获通过代码获取现存的 DOM 元素，以我的博客作为演示，地址：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/about.html">about.html</a></p>
+</blockquote>
+<h3 id="1-使用-ID-进行获取"><a href="#1-使用-ID-进行获取" class="headerlink" title="1. 使用 ID 进行获取"></a>1. 使用 ID 进行获取</h3><blockquote>
+<p>WEB 开发者设计网页的时候，会给一些经常需要修改的元素添加<code>id</code>属性，原则上每个元素的<code>id</code>都是不同的，所以如果某个元素具有<code>id</code>属性，我们就可以使用<code>getElementById</code>来获取</p>
+<p>需要注意的是，如果元素没有<code>id</code>属性的话这个方法就行不通了</p>
+</blockquote>
+<p>随便打开一篇博文，最下面的评论框是带有<code>id</code>属性的，使用开发者工具我们可以看到，它的<code>id</code>为<code>comment</code></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1796896812.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1796896812.png" alt="评论框的ID"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1796896812.png">评论框的 ID</a></p>
+<p>我们可以用<code>document.getElementById( id名称 )</code>的方式获取 DOM 元素</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> box = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;comment&quot;</span>);</span><br><span class="line">box.<span class="property">value</span> = <span class="string">&quot;通过ID获取DOM&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>代码非常好理解，先调用<code>getElementById</code>方法获取 DOM，然后修改它的<code>value</code>属性，效果就是文本框的内容被修改了</p>
+<blockquote>
+<p>PS： textContent 属性修改的是 HTML 文本，而 value 属性修改的是<strong>文本框</strong>中的内容，不影响 HTML 文本</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/4015974876.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/4015974876.png" alt="代码运行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/4015974876.png">代码运行效果</a></p>
+<h3 id="2-使用-CSS-选择器进行获取"><a href="#2-使用-CSS-选择器进行获取" class="headerlink" title="2. 使用 CSS 选择器进行获取"></a>2. 使用 CSS 选择器进行获取</h3><blockquote>
+<p>在一个网页中，具有<code>id</code>属性的元素不会太多，大多数时候都是没有这个属性的，这时候可以根据元素的<code>class</code>属性，使用<code>querySelector（获取符合条件的第一个元素）</code>或者<code>querySelectorAll(获取符合条件的全部元素数组)</code>进行获取</p>
+<p>本节只介绍常用的方法，更详细的介绍可以参考这个：<a target="_blank" rel="noopener" href="https://www.w3school.com.cn/cssref/css_selectors.asp">CSS 选择器参考手册</a></p>
+</blockquote>
+<ul>
+<li><p>根据<code>class</code>进行选择</p>
+<p>标题元素的<code>class</code>为<code>entry-title m-n font-thin text-black l-h</code>，<code>class</code>选择器的语法为<code>.</code>+<code>class名称</code>，如果有多个<code>class</code>名称，则用<code>.</code>分隔</p>
+<p>所以标题元素的选择器写法为<code>.entry-title.m-n.font-thin.text-black.l-h</code></p>
+<blockquote>
+<p>在 CSS 选择器语法中，空格代表子元素的意思，所以不能随意添加空格。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3420271956.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3420271956.png" alt="“entry-title”这个类名是独一无二的"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3420271956.png">“entry-title”这个类名是独一无二的</a></p>
+<p>通过搜索，我们发现<code>entry-title</code>在 HTML 文档只出现了一次，因此选择器也可以简化写作<code>.entry-title</code>，代码如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//两种写法等效</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.entry-title.m-n.font-thin.text-black.l-h&quot;</span>);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.entry-title&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1955883962.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1955883962.png" alt="代码执行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1955883962.png">代码执行效果</a></p>
+<p>在实际运用中，没必要给出完整的<code>class</code>，只需要写独一无二的部分即可</p>
+</li>
+<li><p>根据<code>id</code>进行选择（可以用，但还是建议用<code>getElementById</code>）</p>
+<p><code>id</code>选择器的语法为<code>#</code>+<code>id名称</code>，评论框的<code>id</code>是<code>comment</code>，所以选择器写法为<code>#comment</code>，代码如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//两种写法等效，推荐第一种</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;comment&quot;</span>);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#comment&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1946624227.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1946624227.png" alt="代码运行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1946624227.png">代码运行效果</a></p>
+</li>
+<li><p>根据元素类型选择</p>
+<p>还可以根据 DOM 元素的类型进行选择，如果网页中只有一个特定种类的元素，那么直接写元素类型即可</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2928204149.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2928204149.png" alt="评论框的元素类型"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2928204149.png">评论框的元素类型</a></p>
+<p>使用开发者工具，我们可以知道，评论框的类型为<code>textarea</code>，而且整个网页只有一个<code>textarea</code>，因此选择器可以直接写成<code>textarea</code>，代码如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;textarea&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3206850005.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3206850005.png" alt="代码运行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3206850005.png">代码运行效果</a></p>
+</li>
+<li><p>根据相对关系进行选择</p>
+<p>有的时候，想要操作的元素可能没有独一无二的属性，那么就可以根据相对关系进行选择</p>
+<p><code>A&gt;B</code>表示在<code>A</code>的一级子元素中查找<code>B</code></p>
+<p><code>A B</code>表示在<code>A</code>的内部查找<code>B</code>（查找范围不仅包括子元素，还包括孙元素等）</p>
+<p><code>A+B</code>表示与<code>A</code>相邻的<code>B</code>元素（平级关系，非父子关系）</p>
+<blockquote>
+<p>这里的 A 和 B 代表的是选择器，选择器可以嵌套使用。</p>
+</blockquote>
+<p><code>A.B</code>，不表示相对关系，它表示类型是<code>A</code>，<code>class</code>名是<code>B</code>的元素，这个要注意。</p>
+<p>还是用标题元素举例子</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/359056867.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/359056867.png" alt="节点之间的层次关系"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/359056867.png">节点之间的层次关系</a></p>
+<p>先找到容易定位的元素，然后再根据相对关系寻找想要找的元素，方法有很多，下面举几个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以下语句都是等效的</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;main&gt;div&gt;div&gt;header&gt;h1&quot;</span>); <span class="comment">//一级子元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;main header&gt;h1&quot;</span>); <span class="comment">//所有子元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;main h1&quot;</span>); <span class="comment">//这样也可以</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;header&gt;h1&quot;</span>); <span class="comment">//多个方法定位header对象</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#small_widgets&gt;h1&quot;</span>);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.bg-light.lter.wrapper-md&gt;h1&quot;</span>);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;header.bg-light&gt;h1&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1273064741.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1273064741.png" alt="代码执行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1273064741.png">代码执行效果</a></p>
+<blockquote>
+<p>写成这个样子主要是为了举例子，实际使用中选择器越简洁越好</p>
+</blockquote>
+</li>
+<li><p>根据其他属性名称进行选择</p>
+<p><code>[xxx]</code>选择带有<code>xxx</code>属性的元素</p>
+<p><code>[xxx=sss]</code>选择<code>xxx</code>属性等于<code>sss</code>的元素</p>
+<p><code>[xxx~=sss]</code>选择<code>xxx</code>属性包含<code>sss</code>的元素（<code>sss</code>必须是整个单词）</p>
+<p><code>[xxx|=sss]</code>选择<code>xxx</code>属性以<code>sss</code>开头的元素（<code>sss</code>必须是整个单词）</p>
+<p><code>[xxx^=sss]</code>选择<code>xxx</code>属性以<code>sss</code>开头的元素（<code>sss</code>可以是单词的一部分）</p>
+<p><code>[xxx$=sss]</code>选择<code>xxx</code>属性以<code>sss</code>结尾的元素（<code>sss</code>可以是单词的一部分）</p>
+<p><code>[xxx*=sss]</code>选择<code>xxx</code>属性包含<code>sss</code>的元素（<code>sss</code>可以是单词的一部分）</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2003869554.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2003869554.png" alt="“评论”的“for”属性"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2003869554.png">“评论”的“for”属性</a></p>
+<p>通过开发者工具可以看出高亮的 DOM 元素具有<code>for</code>属性，属性值为<code>comment</code>，代码如下，感受一下几种用法的区别</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for=comment]&quot;</span>); <span class="comment">//完整匹配</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for|=co]&quot;</span>); <span class="comment">//匹配开头，匹配失败，for属性中没有co这个单词</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for~=co]&quot;</span>); <span class="comment">//匹配任意位置，匹配失败，for属性中没有co这个单词</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for^=co]&quot;</span>); <span class="comment">//匹配开头</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for*=co]&quot;</span>); <span class="comment">//匹配任意位置</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for*=mm]&quot;</span>); <span class="comment">//匹配任意位置</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;[for$=nt]&quot;</span>); <span class="comment">//匹配结尾</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1818463942.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1818463942.png" alt="代码运行结果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1818463942.png">代码运行结果</a></p>
+</li>
+<li><p>组合选择器</p>
+<p>上面介绍过的选择器可以组合使用，比如选择表情按钮中的矢量图片</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2533555611.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2533555611.png" alt="选择器与对象的对应关系"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2533555611.png">选择器与对象的对应关系</a></p>
+<p>代码如下，自己体会一下各个部分是什么意思，以及哪些部分是没有必要的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//两种写法效果一样</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(</span><br><span class="line">  <span class="string">&quot;textarea.form-control[name=text]+div.OwO&gt;.OwO-logo svg&quot;</span></span><br><span class="line">);</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.OwO-logo svg&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3343756732.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3343756732.png" alt="代码运行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3343756732.png">代码运行效果</a></p>
+</li>
+</ul>
+<hr>
+<h2 id="0x04-DOM-进阶之修改-DOM-元素"><a href="#0x04-DOM-进阶之修改-DOM-元素" class="headerlink" title="0x04 DOM 进阶之修改 DOM 元素"></a>0x04 DOM 进阶之修改 DOM 元素</h2><blockquote>
+<p>拿到了 DOM 对象，接下来就可以进行各种操 ♂ 作了</p>
+<p>本节将会介绍 DOM 元素的常用方法，以我的博客作为演示，地址：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/about.html">about.html</a></p>
+</blockquote>
+<p>以标题元素为例，首先我们先获取 DOM 对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> h1 = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;h1&quot;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(h1);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1638747030.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1638747030.png" alt="标题DOM对象"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1638747030.png">标题 DOM 对象</a></p>
+<p>使用开发者工具可以非常方便的看到 DOM 元素的方法和属性</p>
+<h3 id="枚举子元素"><a href="#枚举子元素" class="headerlink" title="枚举子元素"></a>枚举子元素</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.children</span><br></pre></td></tr></table></figure>
+
+<p>返回值为 DOM 元素的所有子元素数组，如果不含有子元素，返回的是空数组。</p>
+<p>可以通过<code>DOM.children[i]</code>的方式获取某一个子元素</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1442769440.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1442769440.png" alt="子元素列表的对应关系"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1442769440.png">子元素列表的对应关系</a></p>
+<h3 id="获取-修改文本内容"><a href="#获取-修改文本内容" class="headerlink" title="获取/修改文本内容"></a>获取/修改文本内容</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.textContent</span><br></pre></td></tr></table></figure>
+
+<p>返回值为当前 DOM 元素内的显示字符（没有被 &lt; &gt; 包起来的所有字符），不仅包括自身，还包括所有子元素</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2681429767.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2681429767.png" alt="元素内没有子元素的情况"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2681429767.png">元素内没有子元素的情况</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/263231933.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/263231933.png" alt="元素内有子元素的情况"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/263231933.png">元素内有子元素的情况</a></p>
+<p><code>DOM.innerText</code>也有类似的效果，区别是它会去掉多余的换行符</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/561485445.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/561485445.png" alt="textContent和innetText的区别"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/561485445.png">textContent 和 innetText 的区别</a></p>
+<p>也可以修改<code>DOM.textContent</code>和``DOM.innerText`</p>
+<p>不过要注意的是，这两个方法会直接替换掉元素内部的内容，如果元素内部有其他子元素的话，子元素会消失。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2917508146.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2917508146.png" alt="修改textContent后，元素内部原来的子元素被替换成了文本"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2917508146.png">修改 textContent 后，元素内部原来的子元素被替换成了文本</a></p>
+<h3 id="获取-修改元素-CSS"><a href="#获取-修改元素-CSS" class="headerlink" title="获取/修改元素 CSS"></a>获取/修改元素 CSS</h3><blockquote>
+<p>只能修改 DOM 元素的内联 CSS，全局 CSS 得修改 Style 元素才行。</p>
+<p>CSS 相关内容不做过多介绍，贴个简单的教程：<a target="_blank" rel="noopener" href="https://www.runoob.com/css/css-tutorial.html">菜鸟 CSS 教程</a></p>
+</blockquote>
+<p><code>DOM.style</code>，获取 DOM 元素的内联 CSS 样式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.style.[css名称]`，获取DOM元素的特定CSS属性，例如`textAlign</span><br></pre></td></tr></table></figure>
+
+<p><code>DOM.style.cssText</code>，获取 DOM 元素的内联 CSS 样式，纯文本格式</p>
+<p>同样的，也可以用类似的方法修改 CSS 样式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.style.[css名称] = &#x27;xxx&#x27;`，修改DOM元素的特定CSS属性为`xxx</span><br></pre></td></tr></table></figure>
+
+<p><code>DOM.style.cssText = &#39;aaa: xxx;&#39;</code>，直接修改 DOM 元素的内联 CSS 文本，可以一次设置多个 CSS</p>
+<blockquote>
+<p>如果想隐藏某些元素的话，可以把它的 CSS 的<code>display</code>属性设置成<code>none</code>，就会被隐藏起来了</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2727950089.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2727950089.png" alt="修改元素CSS"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2727950089.png">修改元素 CSS</a></p>
+<h3 id="新增子元素"><a href="#新增子元素" class="headerlink" title="新增子元素"></a>新增子元素</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.appendChild( [要插入的DOM对象] )</span><br></pre></td></tr></table></figure>
+
+<p><code>appendChild</code>会将新插入的对象放在所有子元素的末尾</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.insertBefore( [要插入的DOM对象] , [DOM对象，将要插在这个对象之前])</span><br></pre></td></tr></table></figure>
+
+<p><code>insertBefore</code>可以指定新插入的对象的位置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> h1 = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;h1&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> b1 = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>);</span><br><span class="line">b1.<span class="property">textContent</span> = <span class="string">&quot;按钮1&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> b2 = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>);</span><br><span class="line">b2.<span class="property">textContent</span> = <span class="string">&quot;按钮2&quot;</span>;</span><br><span class="line">h1.<span class="title function_">appendChild</span>(b1);</span><br><span class="line">h1.<span class="title function_">insertBefore</span>(b2, h1.<span class="property">children</span>[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/103122373.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/103122373.png" alt="appendChild和insertBefore的区别"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/103122373.png">appendChild 和 insertBefore 的区别</a></p>
+<h3 id="删除对象"><a href="#删除对象" class="headerlink" title="删除对象"></a>删除对象</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.remove()</span><br></pre></td></tr></table></figure>
+
+<p>这是个方法，所以要加<code>()</code>，调用后会在 HTML 文本中删除对象对应的内容</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2153584846.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2153584846.png" alt="删除元素"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2153584846.png">删除元素</a></p>
+<h3 id="添加-删除事件监听器"><a href="#添加-删除事件监听器" class="headerlink" title="添加/删除事件监听器"></a>添加/删除事件监听器</h3><p><code>DOM.addEventListener( [事件名称] , [回调函数])</code>添加事件监听器</p>
+<p><code>DOM.removeEventListener( [事件名称] , [回调函数])</code>移除事件监听器</p>
+<p>也可以用以前的写法（不推荐）：</p>
+<p><code>DOM.on[事件名称] = [回调函数]</code>添加事件监听器</p>
+<p><code>DOM.on[事件名称] = null</code>移除事件监听器</p>
+<p>比如要让<code>h1</code>对象响应<code>click</code>事件，代码如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> h1 = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;h1&quot;</span>);</span><br><span class="line"><span class="comment">//比较推荐这种写法</span></span><br><span class="line">h1.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;响应click事件&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//也可以用旧风格的写法</span></span><br><span class="line">h1.<span class="property">onclick</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&quot;响应click事件&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//一些解释：</span></span><br><span class="line"><span class="comment">//() =&gt; &#123; ... &#125; 定义了一个匿名函数，相当于 function()&#123; ... &#125;</span></span><br><span class="line"><span class="comment">//也可以使用实名函数，比如定义了function foo()&#123; ... &#125;以后，也可以这么绑定：</span></span><br><span class="line"><span class="comment">//h1.addEventListener(&#x27;click&#x27;,foo);</span></span><br><span class="line"><span class="comment">//h1.onclick = foo;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1046498810.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1046498810.png" alt="绑定方法1"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1046498810.png">绑定方法 1</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/688308048.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/688308048.png" alt="绑定方法2"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/688308048.png">绑定方法 2</a></p>
+<blockquote>
+<p>删除绑定的方法也是类似的，不再赘述</p>
+</blockquote>
+<h3 id="模拟鼠标点击"><a href="#模拟鼠标点击" class="headerlink" title="模拟鼠标点击"></a>模拟鼠标点击</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOM.click()</span><br></pre></td></tr></table></figure>
+
+<p>相当于鼠标点了一下 DOM 对象，触发它的<code>click</code>事件（如果有的话）</p>
+<hr>
+<h2 id="0x05-第一个油猴脚本"><a href="#0x05-第一个油猴脚本" class="headerlink" title="0x05 第一个油猴脚本"></a>0x05 第一个油猴脚本</h2><blockquote>
+<p>讲了这么久，都是在介绍前端的基础知识，接下来开始正文</p>
+</blockquote>
+<p>首先让我们新建一个用户脚本</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3648276243.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3648276243.png" alt="新建用户脚本"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3648276243.png">新建用户脚本</a></p>
+<p>按<code>Ctrl</code>+<code>S</code>即可保存</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1948554234.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1948554234.png" alt="新的用户脚本"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1948554234.png">新的用户脚本</a></p>
+<h3 id="元信息"><a href="#元信息" class="headerlink" title="元信息"></a>元信息</h3><blockquote>
+<p>元信息是给油猴插件使用的，用来记录脚本的属性</p>
+</blockquote>
+<p>新建脚本时给出的默认元信息如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ==UserScript==</span></span><br><span class="line"><span class="comment">// @name         New Userscript               //名称</span></span><br><span class="line"><span class="comment">// @namespace    http://tampermonkey.net/     //命名空间</span></span><br><span class="line"><span class="comment">// 说明：@namespace相同，@name也相同的脚本会被油猴当做是同一个脚本，这两个属性起到区分不同脚本的作用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// @version      0.1                          //版本号</span></span><br><span class="line"><span class="comment">// @description  try to take over the world!  //说明</span></span><br><span class="line"><span class="comment">// @author       You                          //作者</span></span><br><span class="line"><span class="comment">// @match        http://*/*                   //在什么网址下启用该脚本</span></span><br><span class="line"><span class="comment">// @grant        none                         //特殊权限（调用GM_开头的函数需要先申请权限）</span></span><br><span class="line"><span class="comment">// ==/UserScript==</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>还有部分比较常见的元信息：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @include      /https://example.com/.*/     //和@match差不多，但是支持正则表达式，我更喜欢用这个</span></span><br><span class="line"><span class="comment">// @connect      example.com                  //如果脚本需要访问跨域资源，需要提前申明</span></span><br><span class="line"><span class="comment">// @license      AGPL-3.0                     //脚本的授权许可信息</span></span><br><span class="line"><span class="comment">// @icon         https://blog.chrxw.com/favicon.ico //脚本的图标（显示在脚本列表里）</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<h3 id="代码区域"><a href="#代码区域" class="headerlink" title="代码区域"></a>代码区域</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Your code here...</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>首先定义了一个匿名函数<code>function() &#123; ... &#125;</code>，也可以写成我常用的格式，都是等效的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Your code here...</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>用<code>()</code>把匿名函数包起来，再在后面加一个<code>()</code>，表示直接执行这个匿名函数</p>
+<blockquote>
+<p>其实完全可以把代码写到匿名函数的外部，都可以执行，只是定义域不同而已</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;;`是伪代码，它告诉解释器，开启`严格模式</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>开启严格模式以后，会进行更严格的语法检查，建议开启，有利于养成良好的编码习惯</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非严格模式，允许访问未定义变量</span></span><br><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  y = <span class="number">3.14</span>; <span class="comment">// 不报错</span></span><br><span class="line">&#125;)();</span><br><span class="line"><span class="comment">// 严格模式，允许访问已定义变量</span></span><br><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>; <span class="comment">// 启用严格模式</span></span><br><span class="line">  <span class="keyword">let</span> y = <span class="number">3.14</span>; <span class="comment">// 不报错（y已定义）</span></span><br><span class="line">&#125;)();</span><br><span class="line"><span class="comment">// 严格模式，不允许访问未定义变量</span></span><br><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>; <span class="comment">// 启用严格模式</span></span><br><span class="line">  y = <span class="number">3.14</span>; <span class="comment">// 报错（y未定义）</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1722968163.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1722968163.png" alt="运行出错，原因是使用了未定义的变量 y"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1722968163.png">运行出错，原因是使用了未定义的变量 y</a></p>
+<h3 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h3><blockquote>
+<p>接下来我们为脚本编写一些功能，以我的博客作为演示，地址：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/about.html">about.html</a></p>
+</blockquote>
+<ul>
+<li><p>首先我们需要修改<strong>元信息</strong>，让脚步只在特定的网页生效</p>
+<p>然后添加作者名称和脚本名称（除了@match 都可以随便写）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ==UserScript==</span></span><br><span class="line"><span class="comment">// @name         第一个油猴脚本</span></span><br><span class="line"><span class="comment">// @namespace    http://blog.chrxw.com/</span></span><br><span class="line"><span class="comment">// @version      0.1</span></span><br><span class="line"><span class="comment">// @description  hello world</span></span><br><span class="line"><span class="comment">// @author       Chr_</span></span><br><span class="line"><span class="comment">// @match        https://blog.chrxw.com/about.html</span></span><br><span class="line"><span class="comment">// @grant        none</span></span><br><span class="line"><span class="comment">// ==/UserScript==</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+</li>
+<li><p>我们先不编写脚本，我们先使用开发者工具测试一下代码</p>
+<p>首先我们找一个对象下手（如图）</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2402910262.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2402910262.png" alt="对象属性"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2402910262.png">对象属性</a></p>
+<p>它没有<code>id</code>属性，但是它的<code>class</code>名称独一无二，所以我们可以直接用<code>document.querySelector(&#39;.item-thumb&#39;)</code>获取到 DOM 元素</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.item-thumb&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+</li>
+<li><p>修改元素的背景图</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a.<span class="property">style</span>.<span class="property">backgroundImage</span> = <span class="string">&quot;url(/usr/customize/logo.png)&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/575351090.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/575351090.png" alt="修改背景图"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/575351090.png">修改背景图</a></p>
+</li>
+<li><p>添加点击事件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  a.<span class="property">style</span>.<span class="property">background</span> = <span class="string">&quot;#f0f&quot;</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>点一下以后背景变成了品红色</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1056920893.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1056920893.png" alt="添加点击事件"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1056920893.png">添加点击事件</a></p>
+</li>
+<li><p>最后我们编写油猴脚本，让这一切自动完成</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ==UserScript==</span></span><br><span class="line"><span class="comment">// @name         第一个油猴脚本</span></span><br><span class="line"><span class="comment">// @namespace    http://blog.chrxw.com/</span></span><br><span class="line"><span class="comment">// @version      0.1</span></span><br><span class="line"><span class="comment">// @description  hello world</span></span><br><span class="line"><span class="comment">// @author       Chr_</span></span><br><span class="line"><span class="comment">// @match        https://blog.chrxw.com/about.html</span></span><br><span class="line"><span class="comment">// @grant        none</span></span><br><span class="line"><span class="comment">// ==/UserScript==</span></span><br><span class="line"></span><br><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line">  <span class="keyword">let</span> a = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.item-thumb&quot;</span>);</span><br><span class="line">  a.<span class="property">style</span>.<span class="property">backgroundImage</span> = <span class="string">&quot;url(/usr/customize/logo.png)&quot;</span>;</span><br><span class="line">  a.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    a.<span class="property">style</span>.<span class="property">background</span> = <span class="string">&quot;#f0f&quot;</span>;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// Your code here...</span></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1790751152.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1790751152.png" alt="脚本运行效果1"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1790751152.png">脚本运行效果 1</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1274556195.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1274556195.png" alt="脚本运行效果2"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1274556195.png">脚本运行效果 2</a></p>
+<p>保存脚本以后，刷新页面，可以看到元素的背景图片已经改掉了，说明脚本运行成功了。</p>
+</li>
+</ul>
+<hr>
+<h2 id="0x06-脚本实战，Auto-Sub3"><a href="#0x06-脚本实战，Auto-Sub3" class="headerlink" title="0x06 脚本实战，Auto_Sub3"></a>0x06 脚本实战，Auto_Sub3</h2><blockquote>
+<p>脚本获取链接：<a target="_blank" rel="noopener" href="https://greasyfork.org/scripts/420878-auto-sub3">Auto_Sub3</a></p>
+</blockquote>
+<h3 id="脚本功能"><a href="#脚本功能" class="headerlink" title="脚本功能"></a>脚本功能</h3><p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/471739013.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/471739013.png" alt="脚本功能"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/471739013.png">脚本功能</a></p>
+<p>安装脚本以后，首页可以打开一个面板，主要功能是一键-3</p>
+<h3 id="元信息-1"><a href="#元信息-1" class="headerlink" title="元信息"></a>元信息</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ==UserScript==</span></span><br><span class="line"><span class="comment">// @name         Auto_Sub3</span></span><br><span class="line"><span class="comment">// @namespace    https://blog.chrxw.com</span></span><br><span class="line"><span class="comment">// @version      2.1</span></span><br><span class="line"><span class="comment">// @description  一键快乐-3</span></span><br><span class="line"><span class="comment">// @author       Chr_</span></span><br><span class="line"><span class="comment">// @include      https://keylol.com/*</span></span><br><span class="line"><span class="comment">// @license      AGPL-3.0</span></span><br><span class="line"><span class="comment">// @icon         https://blog.chrxw.com/favicon.ico</span></span><br><span class="line"><span class="comment">// @grant        GM_setValue</span></span><br><span class="line"><span class="comment">// @grant        GM_getValue</span></span><br><span class="line"><span class="comment">// @grant        GM_xmlhttpRequest</span></span><br><span class="line"><span class="comment">// ==/UserScript==</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>元信息提供了这个脚本的基本信息，我们还可以知道，它申请了<code>GM_setValue</code>,<code>GM_getValue</code>和<code>GM_xmlhttpRequest</code>三个特殊权限</p>
+<h3 id="代码总览"><a href="#代码总览" class="headerlink" title="代码总览"></a>代码总览</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上次-3时间</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VLast</span> = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 今天还能不能-3</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VCan3</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">// 自动展开</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VShow</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="comment">// 自动-3</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VAuto</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="comment">// 音效载入</span></span><br><span class="line"><span class="keyword">let</span> sound = <span class="keyword">new</span> <span class="title class_">Audio</span>(<span class="string">&quot;https://blog.chrxw.com/usr/keylol/gas.mp3&quot;</span>);</span><br><span class="line"></span><br><span class="line">(<span class="keyword">function</span> (<span class="params"></span>) &#123; <span class="comment">// 每次加载以后从这里运行</span></span><br><span class="line">    <span class="string">&#x27;use strict&#x27;</span>;</span><br><span class="line">    <span class="title function_">loadCFG</span>();</span><br><span class="line">    <span class="title function_">addBtns</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">VShow</span>) &#123;</span><br><span class="line">        <span class="title function_">switchPanel</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">VCan3</span> &amp;&amp; <span class="title class_">VAuto</span>) &#123;</span><br><span class="line">        <span class="title function_">autoRoll</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 添加GUI</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addBtns</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 显示小轮盘</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">showLiteRoll</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 自动打开面板</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fBtnShow</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 自动-3</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fBtnAuto</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 显示布尔</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">bool2txt</span>(<span class="params">bool</span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 隐藏面板</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">switchPanel</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 读取设置</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loadCFG</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 保存设置</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">saveCFG</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 检查能否-3</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">checkZP</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 禁止-3</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">disableS3</span>(<span class="params"></span>) &#123; ... &#125;</span><br><span class="line"><span class="comment">// 自动-3</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">autoRoll</span>(<span class="params"></span>) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>先不用太纠结代码，建议先用调试模式看一下代码流程</p>
+<h3 id="脚本调试模式"><a href="#脚本调试模式" class="headerlink" title="脚本调试模式"></a>脚本调试模式</h3><p>在设置里可以打开调试模式，开启以后在加载完脚本以后会自动暂停，可以用来动态调试脚本</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2845590638.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2845590638.png" alt="开启调试模式"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2845590638.png">开启调试模式</a></p>
+<p>打开调试模式以后，先打开开发者工具，然后刷新页面，可以看到暂停在<code>debugger</code>语句上了</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1881573087.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1881573087.png" alt="调试中断"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1881573087.png">调试中断</a></p>
+<p>给我们感兴趣的函数添加断点，然后点“继续运行（F8）”</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3358722047.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/3358722047.png" alt="添加断点"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/3358722047.png">添加断点</a></p>
+<p>可以自己尝试跟踪一下每个函数的运行过程，不再赘述</p>
+<h3 id="代码详解"><a href="#代码详解" class="headerlink" title="代码详解"></a>代码详解</h3><h4 id="脚本入口"><a href="#脚本入口" class="headerlink" title="脚本入口"></a>脚本入口</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 上次-3时间</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VLast</span> = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 今天还能不能-3</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VCan3</span> = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">// 自动展开</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VShow</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="comment">// 自动-3</span></span><br><span class="line"><span class="keyword">let</span> <span class="title class_">VAuto</span> = <span class="literal">false</span>;</span><br><span class="line"><span class="comment">// 音效载入</span></span><br><span class="line"><span class="keyword">let</span> sound = <span class="keyword">new</span> <span class="title class_">Audio</span>(<span class="string">&quot;https://blog.chrxw.com/usr/keylol/gas.mp3&quot;</span>);</span><br><span class="line">(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line">  <span class="title function_">loadCFG</span>();</span><br><span class="line">  <span class="title function_">addBtns</span>();</span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">VShow</span>) &#123;</span><br><span class="line">    <span class="title function_">switchPanel</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">VCan3</span> &amp;&amp; <span class="title class_">VAuto</span>) &#123;</span><br><span class="line">    <span class="title function_">autoRoll</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>首先定义了 5 个全局变量，然后运行了匿名函数，在这个匿名函数里完成了脚本的初始化工作</p>
+<p>在匿名函数内部调用了这么几个函数：<code>loadCFG</code>，<code>addBtns</code>，<code>switchPanel</code>，<code>autoRoll</code></p>
+<h4 id="loadCFG-saveCFG-读写配置"><a href="#loadCFG-saveCFG-读写配置" class="headerlink" title="loadCFG/saveCFG - 读写配置"></a>loadCFG/saveCFG - 读写配置</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取设置</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loadCFG</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> t = <span class="literal">null</span>;</span><br><span class="line">  t = <span class="title function_">GM_getValue</span>(<span class="string">&quot;VLast&quot;</span>);</span><br><span class="line">  t = <span class="title class_">Number</span>(t);</span><br><span class="line">  <span class="keyword">if</span> (t != t) &#123;</span><br><span class="line">    t = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title class_">VLast</span> = t;</span><br><span class="line">  t = <span class="title function_">GM_getValue</span>(<span class="string">&quot;VCan3&quot;</span>);</span><br><span class="line">  <span class="title class_">VCan3</span> = <span class="title class_">Boolean</span>(t);</span><br><span class="line">  t = <span class="title function_">GM_getValue</span>(<span class="string">&quot;VShow&quot;</span>);</span><br><span class="line">  <span class="title class_">VShow</span> = <span class="title class_">Boolean</span>(t);</span><br><span class="line">  t = <span class="title function_">GM_getValue</span>(<span class="string">&quot;VAuto&quot;</span>);</span><br><span class="line">  <span class="title class_">VAuto</span> = <span class="title class_">Boolean</span>(t);</span><br><span class="line">  <span class="comment">// 日期变更,重置VCan3</span></span><br><span class="line">  <span class="keyword">let</span> d = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">  <span class="keyword">let</span> day = d.<span class="title function_">getDate</span>();</span><br><span class="line">  <span class="keyword">let</span> hour = d.<span class="title function_">getHours</span>();</span><br><span class="line">  <span class="keyword">if</span> (day != <span class="title class_">VLast</span> &amp;&amp; hour &gt;= <span class="number">8</span>) &#123;</span><br><span class="line">    <span class="title class_">VCan3</span> = <span class="literal">true</span>;</span><br><span class="line">    <span class="title class_">VLast</span> = day;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">saveCFG</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 保存设置</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">saveCFG</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="title function_">GM_setValue</span>(<span class="string">&quot;VLast&quot;</span>, <span class="title class_">VLast</span>);</span><br><span class="line">  <span class="title function_">GM_setValue</span>(<span class="string">&quot;VCan3&quot;</span>, <span class="title class_">VCan3</span>);</span><br><span class="line">  <span class="title function_">GM_setValue</span>(<span class="string">&quot;VShow&quot;</span>, <span class="title class_">VShow</span>);</span><br><span class="line">  <span class="title function_">GM_setValue</span>(<span class="string">&quot;VAuto&quot;</span>, <span class="title class_">VAuto</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>脚本保存数据的方法有很多种，可以利用原生的<code>Cookie</code>，也可以利用 HTML5 标准中的<code>LocalStorge</code>，但是这两个地方只能保存文本，我们还需要自行完成类型转换，非常不方便，所以我用的是油猴自带的储存空间</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要在元信息里提前申明，才可以使用</span></span><br><span class="line"><span class="comment">// @grant        GM_setValue</span></span><br><span class="line"><span class="comment">// @grant        GM_getValue</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p><code>GM_setValue( 键名 , 键值)</code>，保存某个值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GM_getValue( 键名 )`，如果键名不存在，返回`null</span><br></pre></td></tr></table></figure>
+
+<p>可以在脚本编辑器的<code>储存</code>TAB 看到当前脚本的储存空间</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2443215129.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2443215129.png" alt="储存的内容"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2443215129.png">储存的内容</a></p>
+<p><code>saveCFG</code>非常简单，就是把 4 个全局变量保存起来</p>
+<p><code>loadCFG</code>也很简单，就是从储存空间读取 4 个变量，然后获取现在的时间和日期，判断日期有没有变更，如果日期变了，并且当前小时数大于<code>8</code>，就把<code>Vcan3</code>赋值成<code>true</code>，然后把<code>VLast</code>改成今天的日期，最后调用<code>saveCFG</code>保存 4 个全局变量</p>
+<h4 id="addBtns-添加-GUI"><a href="#addBtns-添加-GUI" class="headerlink" title="addBtns - 添加 GUI"></a>addBtns - 添加 GUI</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加GUI</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addBtns</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">genButton</span>(<span class="params">text, foo, id</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> b = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;button&quot;</span>); <span class="comment">//创建类型为button的DOM对象</span></span><br><span class="line">    b.<span class="property">textContent</span> = text; <span class="comment">//修改内部文本为text</span></span><br><span class="line">    b.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;margin: 3px 5px;&quot;</span>; <span class="comment">//添加样式（margin可以让元素间隔开一定距离）</span></span><br><span class="line">    b.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, foo); <span class="comment">//绑定click的事件的监听器</span></span><br><span class="line">    <span class="keyword">if</span> (id) &#123;</span><br><span class="line">      b.<span class="property">id</span> = id;</span><br><span class="line">    &#125; <span class="comment">//如果传入了id，就修改DOM对象的id</span></span><br><span class="line">    <span class="keyword">return</span> b; <span class="comment">//返回修改好的DOM对象</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">genDiv</span>(<span class="params">cls</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> d = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;div&quot;</span>); <span class="comment">//创建类型为div的DOM对象</span></span><br><span class="line">    <span class="keyword">if</span> (cls) &#123;</span><br><span class="line">      d.<span class="property">className</span> = cls;</span><br><span class="line">    &#125; <span class="comment">//如果传入了cls，就修改DOM对象的class</span></span><br><span class="line">    <span class="keyword">return</span> d; <span class="comment">//返回修改好的DOM对象</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">genPanel</span>(<span class="params">name, visiable</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> p = <span class="title function_">genDiv</span>(name); <span class="comment">//创建类型为div，class为name的DOM对象</span></span><br><span class="line">    p.<span class="property">id</span> = name; <span class="comment">//修改DOM对象的id为name</span></span><br><span class="line">    p.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;width: 100%;height: 100%;&quot;</span>; <span class="comment">//修改DOM对象的样式（占满父容器）</span></span><br><span class="line">    <span class="keyword">if</span> (!visiable) &#123;</span><br><span class="line">      p.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&quot;none&quot;</span>;</span><br><span class="line">    &#125; <span class="comment">//修改DOM对象的样式（不可见）</span></span><br><span class="line">    <span class="keyword">return</span> p; <span class="comment">//返回修改好的DOM对象</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//使用CSS选择器获取对象</span></span><br><span class="line">  <span class="keyword">let</span> btnSwitch = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_left_title&gt;div&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (btnSwitch == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  btnSwitch.<span class="property">id</span> = <span class="string">&quot;btnSwitch1&quot;</span>;</span><br><span class="line">  btnSwitch.<span class="property">title</span> = <span class="string">&quot;点这里开启/隐藏控制面板&quot;</span>;</span><br><span class="line">  btnSwitch.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;width: auto;padding: 0 5px;cursor: pointer;&quot;</span>;</span><br><span class="line">  btnSwitch.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, switchPanel);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> panelArea = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_navi_left&quot;</span>);</span><br><span class="line">  <span class="keyword">let</span> panelOri = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_left_detail&quot;</span>);</span><br><span class="line">  panelOri.<span class="property">id</span> = <span class="string">&quot;panelOri&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> panel54 = <span class="title function_">genPanel</span>(<span class="string">&quot;panel54&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> aLP = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">  aLP.<span class="property">href</span> = <span class="string">&quot;https://keylol.com/t571093-1-1&quot;</span>;</span><br><span class="line">  <span class="keyword">let</span> img54 = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;img&quot;</span>);</span><br><span class="line">  img54.<span class="property">src</span> = <span class="string">&quot;https://gitee.com/chr_a1/gm_scripts/raw/master/index.png&quot;</span>;</span><br><span class="line">  img54.<span class="property">alt</span> = <span class="string">&quot;总之这里是54的名言&quot;</span>;</span><br><span class="line">  img54.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;float: right;margin-top: -28px;height: 100%;&quot;</span>;</span><br><span class="line">  aLP.<span class="title function_">appendChild</span>(img54);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> btnArea = <span class="title function_">genDiv</span>(<span class="string">&quot;btnArea&quot;</span>);</span><br><span class="line">  btnArea.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;width: 210px;text-align: center;margin-top: -10px;&quot;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> btnS3 = <span class="title function_">genButton</span>(<span class="string">&quot;【一键-3】&quot;</span>, autoRoll, <span class="string">&quot;btnS3&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="title class_">VCan3</span>) &#123;</span><br><span class="line">    btnS3.<span class="property">style</span>.<span class="property">textDecoration</span> = <span class="string">&quot;line-through&quot;</span>;</span><br><span class="line">    btnS3.<span class="property">textContent</span> = <span class="string">&quot;今天已经不能-3了&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> btnShow = <span class="title function_">genButton</span>(</span><br><span class="line">    <span class="title function_">bool2txt</span>(<span class="title class_">VShow</span>) + <span class="string">&quot;自动打开面板&quot;</span>,</span><br><span class="line">    fBtnShow,</span><br><span class="line">    <span class="string">&quot;btnShow&quot;</span></span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">let</span> btnAuto = <span class="title function_">genButton</span>(<span class="title function_">bool2txt</span>(<span class="title class_">VAuto</span>) + <span class="string">&quot;自动每日-3&quot;</span>, fBtnAuto, <span class="string">&quot;btnAuto&quot;</span>);</span><br><span class="line"></span><br><span class="line">  btnArea.<span class="title function_">appendChild</span>(btnS3);</span><br><span class="line">  btnArea.<span class="title function_">appendChild</span>(btnShow);</span><br><span class="line">  btnArea.<span class="title function_">appendChild</span>(btnAuto);</span><br><span class="line"></span><br><span class="line">  panel54.<span class="title function_">appendChild</span>(aLP);</span><br><span class="line">  panel54.<span class="title function_">appendChild</span>(btnArea);</span><br><span class="line">  panelArea.<span class="title function_">insertBefore</span>(panel54, panelArea.<span class="property">children</span>[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>看着很长，实际上很简单，首先定义了 3 和内部函数<code>genButton</code>，<code>genDiv</code>，<code>genPanel</code>，用来生成我们需要的 DOM 元素</p>
+<p>然后尝试用选择器获取 DOM 对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> btnSwitch = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_left_title&gt;div&quot;</span>); <span class="comment">//使用CSS选择器获取DOM对象</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (btnSwitch == <span class="literal">null</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125; <span class="comment">//如果页面中不存在这个对象，就直接返回，结束运行</span></span><br><span class="line"></span><br><span class="line">btnSwitch.<span class="property">id</span> = <span class="string">&quot;btnSwitch1&quot;</span>; <span class="comment">//添加id属性</span></span><br><span class="line">btnSwitch.<span class="property">title</span> = <span class="string">&quot;点这里开启/隐藏控制面板&quot;</span>; <span class="comment">//添加title属性（鼠标悬停的时候显示的文本）</span></span><br><span class="line">btnSwitch.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;width: auto;padding: 0 5px;cursor: pointer;&quot;</span>; <span class="comment">//添加CSS样式</span></span><br><span class="line">btnSwitch.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, switchPanel); <span class="comment">//绑定click事件的回调函数为switchPanel</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>可以利用开发者工具看一下是哪个对象</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2141947194.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2141947194.png" alt="查看对象"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2141947194.png">查看对象</a></p>
+<p>剩下的部分也很好理解，创建 3 个<code>button</code>对象，1 个<code>img</code>对象，依次添加到名为<code>panel54</code>的<code>div</code>对象里，最后再把<code>panel54</code>添加到<code>panelArea</code>中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> panelArea = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_navi_left&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> panelOri = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;.index_left_detail&quot;</span>);</span><br><span class="line">panelOri.<span class="property">id</span> = <span class="string">&quot;panelOri&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> panel54 = <span class="title function_">genPanel</span>(<span class="string">&quot;panel54&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> aLP = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;a&quot;</span>);</span><br><span class="line">aLP.<span class="property">href</span> = <span class="string">&quot;https://keylol.com/t571093-1-1&quot;</span>;</span><br><span class="line"><span class="keyword">let</span> img54 = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;img&quot;</span>);</span><br><span class="line">img54.<span class="property">src</span> = <span class="string">&quot;https://gitee.com/chr_a1/gm_scripts/raw/master/index.png&quot;</span>;</span><br><span class="line">img54.<span class="property">alt</span> = <span class="string">&quot;总之这里是54的名言&quot;</span>;</span><br><span class="line">img54.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;float: right;margin-top: -28px;height: 100%;&quot;</span>;</span><br><span class="line">aLP.<span class="title function_">appendChild</span>(img54);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> btnArea = <span class="title function_">genDiv</span>(<span class="string">&quot;btnArea&quot;</span>);</span><br><span class="line">btnArea.<span class="property">style</span>.<span class="property">cssText</span> = <span class="string">&quot;width: 210px;text-align: center;margin-top: -10px;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> btnS3 = <span class="title function_">genButton</span>(<span class="string">&quot;【一键-3】&quot;</span>, autoRoll, <span class="string">&quot;btnS3&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="title class_">VCan3</span>) &#123;</span><br><span class="line">  btnS3.<span class="property">style</span>.<span class="property">textDecoration</span> = <span class="string">&quot;line-through&quot;</span>;</span><br><span class="line">  btnS3.<span class="property">textContent</span> = <span class="string">&quot;今天已经不能-3了&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> btnShow = <span class="title function_">genButton</span>(<span class="title function_">bool2txt</span>(<span class="title class_">VShow</span>) + <span class="string">&quot;自动打开面板&quot;</span>, fBtnShow, <span class="string">&quot;btnShow&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> btnAuto = <span class="title function_">genButton</span>(<span class="title function_">bool2txt</span>(<span class="title class_">VAuto</span>) + <span class="string">&quot;自动每日-3&quot;</span>, fBtnAuto, <span class="string">&quot;btnAuto&quot;</span>);</span><br><span class="line"></span><br><span class="line">btnArea.<span class="title function_">appendChild</span>(btnS3);</span><br><span class="line">btnArea.<span class="title function_">appendChild</span>(btnShow);</span><br><span class="line">btnArea.<span class="title function_">appendChild</span>(btnAuto);</span><br><span class="line"></span><br><span class="line">panel54.<span class="title function_">appendChild</span>(aLP);</span><br><span class="line">panel54.<span class="title function_">appendChild</span>(btnArea);</span><br><span class="line">panelArea.<span class="title function_">insertBefore</span>(panel54, panelArea.<span class="property">children</span>[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>通过<code>switchPanel</code>，可以切换显示原来的元素和脚本的面板</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 隐藏面板</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">switchPanel</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> panel1 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;panel54&quot;</span>);</span><br><span class="line">  <span class="keyword">let</span> panel2 = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;panelOri&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (panel1.<span class="property">style</span>.<span class="property">display</span> == <span class="string">&quot;none&quot;</span>) &#123;</span><br><span class="line">    btnSwitch1.<span class="property">textContent</span> = <span class="string">&quot;今天你【-3】了吗 - By Chr_&quot;</span>;</span><br><span class="line">    panel1.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&quot;block&quot;</span>;</span><br><span class="line">    panel2.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&quot;none&quot;</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    btnSwitch1.<span class="property">textContent</span> = <span class="string">&quot;关注重点&quot;</span>;</span><br><span class="line">    panel1.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&quot;none&quot;</span>;</span><br><span class="line">    panel2.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&quot;block&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>运行效果：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1108571100.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1108571100.png" alt="关闭的状态"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1108571100.png">关闭的状态</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/646499800.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/646499800.png" alt="开启的状态"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/646499800.png">开启的状态</a></p>
+<h4 id="autoRoll-自动-3"><a href="#autoRoll-自动-3" class="headerlink" title="autoRoll - 自动-3"></a>autoRoll - 自动-3</h4><p>最后我们看一下核心功能，自动-3</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自动-3</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">autoRoll</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    sound.<span class="title function_">play</span>();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">let</span> v = <span class="number">0</span>;</span><br><span class="line">  <span class="title function_">gethash</span>();</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">gethash</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">GM_xmlhttpRequest</span>(&#123;</span><br><span class="line">      <span class="attr">method</span>: <span class="string">&quot;GET&quot;</span>,</span><br><span class="line">      <span class="attr">url</span>: <span class="string">&quot;https://keylol.com/plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&quot;</span>,</span><br><span class="line">      <span class="attr">onload</span>: <span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (response.<span class="property">status</span> == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="keyword">let</span> m = response.<span class="property">responseText</span>.<span class="title function_">match</span>(</span><br><span class="line">            <span class="regexp">/plugin\.php\?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=(.+)&amp;roll/</span></span><br><span class="line">          );</span><br><span class="line">          <span class="keyword">let</span> hash = m ? m[<span class="number">1</span>] : <span class="literal">null</span>;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="title function_">log</span>(hash);</span><br><span class="line">          <span class="keyword">if</span> (hash != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="title function_">roll</span>(hash);</span><br><span class="line">            <span class="title function_">roll</span>(hash);</span><br><span class="line">            <span class="title function_">roll</span>(hash);</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="title function_">disableS3</span>();</span><br><span class="line">            <span class="title function_">saveCFG</span>();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&quot;出错&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">roll</span>(<span class="params">hash</span>) &#123;</span><br><span class="line">    <span class="title function_">GM_xmlhttpRequest</span>(&#123;</span><br><span class="line">      <span class="attr">method</span>: <span class="string">&quot;GET&quot;</span>,</span><br><span class="line">      <span class="attr">url</span>:</span><br><span class="line">        <span class="string">&quot;https://keylol.com/plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=&quot;</span> +</span><br><span class="line">        hash +</span><br><span class="line">        <span class="string">&quot;&amp;roll&quot;</span>,</span><br><span class="line">      <span class="attr">onload</span>: <span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (response.<span class="property">status</span> == <span class="number">200</span>) &#123;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">responseText</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&quot;出错&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (++v == <span class="number">3</span>) &#123;</span><br><span class="line">          <span class="title function_">disableS3</span>();</span><br><span class="line">          <span class="title function_">saveCFG</span>();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>乍一看非常复杂，实际上也很好理解</p>
+<ul>
+<li><p>```javascript<br>try {<br>  sound.play();<br>} catch (e) {<br>  console.error(e);<br>}<br>let v = 0;<br>gethash();</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  **JavaScript**</span><br><span class="line"></span><br><span class="line">  _复制_</span><br><span class="line"></span><br><span class="line">  首先调用`sound.play()`，播放蒸汽泄漏的音效，`sound`是全局变量，会在网页载入的时候自动加载音频资源，如果遇到错误就忽略错误（比如网络问题加载音频失败的话就会报错）</span><br><span class="line"></span><br><span class="line">  然后调用了`gethash`方法</span><br><span class="line"></span><br><span class="line">- ```javascript</span><br><span class="line">  function gethash() &#123;</span><br><span class="line">    GM_xmlhttpRequest(&#123;</span><br><span class="line">      method: &quot;GET&quot;,</span><br><span class="line">      url: &quot;https://keylol.com/plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&quot;,</span><br><span class="line">      onload: function (response) &#123;</span><br><span class="line">        if (response.status == 200) &#123;</span><br><span class="line">          let m = response.responseText.match(</span><br><span class="line">            /plugin\.php\?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=(.+)&amp;roll/</span><br><span class="line">          );</span><br><span class="line">          let hash = m ? m[1] : null;</span><br><span class="line">          console.log(hash);</span><br><span class="line">          if (hash != null) &#123;</span><br><span class="line">            roll(hash);</span><br><span class="line">            roll(hash);</span><br><span class="line">            roll(hash);</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            disableS3();</span><br><span class="line">            saveCFG();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          console.error(&quot;出错&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<ul>
+<li><p>这个函数使用了<code>GM_xmlhttpRequest</code>，这个东西是一个网络请求器，深入了解可以参考<a target="_blank" rel="noopener" href="https://www.tampermonkey.net/documentation.php?ext=dhdg#GM_xmlhttpRequest">官方文档（英语）</a>，<code>GM_xmlhttpRequest</code>类似于<code>xmlHttpRequest</code>，两者用法几乎一样，只是<code>GM_xmlhttpRequest</code>不存在<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS">跨域</a>的问题</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要先在元信息里申明，才可以使用</span></span><br><span class="line"><span class="comment">// @grant        GM_xmlhttpRequest</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>简单的用法如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">GM_xmlhttpRequest</span>(&#123;</span><br><span class="line">  <span class="attr">method</span>: <span class="string">&quot;&quot;</span>, <span class="comment">//请求方法，可以是 GET POST HEAD 等</span></span><br><span class="line">  <span class="attr">url</span>: <span class="string">&quot;&quot;</span>, <span class="comment">//请求路径，简单的说就是url</span></span><br><span class="line">  <span class="attr">onload</span>: <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">//请求被响应时执行，response是接受到的响应的对象</span></span><br><span class="line">    <span class="comment">//response.status，获取响应代码（200代表请求成功,4xx和5xx代表请求出错）</span></span><br><span class="line">    <span class="comment">//response.responseText，获取响应文本，本例中获取到的是HTML文本</span></span><br><span class="line">    <span class="comment">//response.responseXML，获取XML格式的响应文本</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+</li>
+<li><p>看到<code>onload</code>的回调函数部分</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">onload</span>: <span class="function">(<span class="params">response</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (response.<span class="property">status</span> == <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> m = response.<span class="property">responseText</span>.<span class="title function_">match</span>(</span><br><span class="line">      <span class="regexp">/plugin\.php\?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=(.+)&amp;roll/</span></span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">let</span> hash = m ? m[<span class="number">1</span>] : <span class="literal">null</span>;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(hash);</span><br><span class="line">    <span class="keyword">if</span> (hash != <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="title function_">roll</span>(hash);</span><br><span class="line">      <span class="title function_">roll</span>(hash);</span><br><span class="line">      <span class="title function_">roll</span>(hash);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="title function_">disableS3</span>();</span><br><span class="line">      <span class="title function_">saveCFG</span>();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&quot;出错&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>首先判断状态码是不是 200（代表请求成功），请求成功才会处理响应的内容</p>
+<p>可以在浏览器中打开<a target="_blank" rel="noopener" href="https://keylol.com/plugin.php?id=steamcn_lottery:view&lottery_id=43">链接</a>，用开发者工具模拟一下处理过程</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2994115059.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2994115059.png" alt="网络请求的响应内容"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2994115059.png">网络请求的响应内容</a></p>
+<p>我们把响应的内容当做纯文本处理，使用正则表达式提取想要的内容</p>
+<blockquote>
+<p>正则表达式深入学习可以参考这个：<a target="_blank" rel="noopener" href="https://www.runoob.com/regexp/regexp-syntax.html">正则表达式 - 语法</a></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">innerHTML</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(</span><br><span class="line">  a.<span class="title function_">match</span>(</span><br><span class="line">    <span class="regexp">/plugin\.php\?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=(.+)&amp;roll/</span></span><br><span class="line">  )</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>简单的讲一下上面的正则表达式是什么意思</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/plugin\.<span class="property">php</span>\?id=<span class="attr">steamcn_lottery</span>:view&amp;lottery_id=<span class="number">43</span>&amp;hash=(.+)&amp;roll/;</span><br><span class="line"><span class="comment">// 两边的 / 就是告诉解释器里面是正则表达式，没别的意思</span></span><br><span class="line"><span class="comment">// 按照不同元素拆分，如下：</span></span><br><span class="line"><span class="comment">// plugin   - 匹配“plugin”这个字符串</span></span><br><span class="line"><span class="comment">// \.       - 匹配“.”，“.”原来有别的意思，在前面加“\”转义以后就只有字面意思了</span></span><br><span class="line"><span class="comment">// id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=   - 匹配一整串字符串</span></span><br><span class="line"><span class="comment">// (.+)     - “()”是子匹配的意思，“.+”意思是匹配至少一个字符</span></span><br><span class="line"><span class="comment">//          - “(.+)”的意思是不仅要匹配至少一个字符，而且匹配到的文本需要返回</span></span><br><span class="line"><span class="comment">// &amp;roll    - 匹配“&amp;roll”这个字符串</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>简单点说就是先找到<code>plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=[XXXXXXX]&amp;roll</code>这一串字符串，然后提取中间的<code>XXXXXXX</code></p>
+<p>执行效果如下，可以看到返回了一个数组，第一个元素是匹配到的字符串，第二个元素是子匹配项，我们只需要子匹配项，也就是<code>8b51a2d3</code>（这个值不同用户是不一样的，所以需要动态获取）</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/574796692.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/574796692.png" alt="查看网络请求"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/574796692.png">查看网络请求</a></p>
+<p>然后就是赋值操作，用到了三目运算符号</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> hash = m ? m[<span class="number">1</span>] : <span class="literal">null</span>;</span><br><span class="line"><span class="comment">// D = A ? B : C</span></span><br><span class="line"><span class="comment">// 等价于：</span></span><br><span class="line"><span class="keyword">if</span> (A) &#123;</span><br><span class="line">  D = B;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  D = C;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 当A的逻辑意义为true时，返回值为B</span></span><br><span class="line"><span class="comment">// 当A的逻辑意义为false时，返回值为C</span></span><br><span class="line"><span class="comment">// 类似这样</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="literal">true</span> ? <span class="number">1</span> : <span class="number">2</span>; <span class="comment">// a = 1</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="literal">false</span> ? <span class="number">1</span> : <span class="number">2</span>; <span class="comment">// a = 2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>如果正则表达式没有匹配到合适的字符串，返回的内容是<code>null</code>，逻辑意义等于<code>false</code>，这时候<code>hash</code>的值就取<code>null</code></p>
+<p>如果正则表达式匹配到了合适的字符串，返回的内容是数组，逻辑意义等于<code>true</code>，这时候<code>hash</code>的值就取数组的第 2 个元素</p>
+<p>然后根据<code>hash</code>决定是不是要继续运行</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (hash != <span class="literal">null</span>) &#123;</span><br><span class="line">  <span class="title function_">roll</span>(hash);</span><br><span class="line">  <span class="title function_">roll</span>(hash);</span><br><span class="line">  <span class="title function_">roll</span>(hash);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="title function_">disableS3</span>();</span><br><span class="line">  <span class="title function_">saveCFG</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+</li>
+</ul>
+</li>
+<li><p>最后是<code>roll</code>函数，核心也是一个网络请求器</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">roll</span>(<span class="params">hash</span>) &#123;</span><br><span class="line">  <span class="title function_">GM_xmlhttpRequest</span>(&#123;</span><br><span class="line">    <span class="attr">method</span>: <span class="string">&quot;GET&quot;</span>,</span><br><span class="line">    <span class="attr">url</span>:</span><br><span class="line">      <span class="string">&quot;https://keylol.com/plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=&quot;</span> +</span><br><span class="line">      hash +</span><br><span class="line">      <span class="string">&quot;&amp;roll&quot;</span>,</span><br><span class="line">    <span class="attr">onload</span>: <span class="keyword">function</span> (<span class="params">response</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (response.<span class="property">status</span> == <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(response.<span class="property">responseText</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&quot;出错&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (++v == <span class="number">3</span>) &#123;</span><br><span class="line">        <span class="title function_">disableS3</span>();</span><br><span class="line">        <span class="title function_">saveCFG</span>();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JavaScript</strong></p>
+<p><em>复制</em></p>
+<p>实际上就是访问<code>https://keylol.com/plugin.php?id=steamcn_lottery:view&amp;lottery_id=43&amp;hash=[XXXXXXX]&amp;roll</code>这个网站，然后把响应结果打印出来</p>
+<p>可以根据上一步得到的<code>hash</code>在浏览器中试一下</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1280820846.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/1280820846.png" alt="参与轮盘"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/1280820846.png">参与轮盘</a></p>
+<p>调用以后，会自增<code>v</code>，如果<code>v = 3</code>，就调用<code>disableS3</code>和<code>saveCFG</code>，修改了按钮的名称，然后保存全局变量</p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2573466154.png"><img src="https://blog.chrxw.com/usr/uploads/2021/02/2573466154.png" alt="执行效果"></a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.chrxw.com/usr/uploads/2021/02/2573466154.png">执行效果</a></p>
+</li>
+</ul>
+<hr>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><blockquote>
+<p>本文链接：<a target="_blank" rel="noopener" href="https://blog.chrxw.com/archives/2021/02/08/1449.html">https://blog.chrxw.com/archives/2021/02/08/1449.html</a></p>
+<p>转载请保留本文链接，谢谢</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://wade9264.github.io">WHY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wade9264.github.io/posts/a20760c1.html">https://wade9264.github.io/posts/a20760c1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wade9264.github.io" target="_blank">WHY's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Tampermonkey/">Tampermonkey</a></div><div class="post_share"><div class="social-share" data-image="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220514.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/870abd39.html" title="Chrome浏览器扩展开发"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220519.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Chrome浏览器扩展开发</div></div></a></div><div class="next-post pull-right"><a href="/posts/be7e4946.html" title="TypeScript快速上手"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092220515.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TypeScript快速上手</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WHY</div><div class="author-info__description">记录，成为更好的自己</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%86%E9%A2%91%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">视频链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-number">3.</span> <span class="toc-text">0x00 前置知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E5%88%9D%E8%AF%86%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7"><span class="toc-number">4.</span> <span class="toc-text">0x01 初识开发者工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-%E5%88%9D%E8%AF%86-DOM"><span class="toc-number">5.</span> <span class="toc-text">0x02 初识 DOM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-DOM-%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%8E%B7%E5%8F%96-DOM-%E5%85%83%E7%B4%A0"><span class="toc-number">6.</span> <span class="toc-text">0x03 DOM 进阶之获取 DOM 元素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8-ID-%E8%BF%9B%E8%A1%8C%E8%8E%B7%E5%8F%96"><span class="toc-number">6.1.</span> <span class="toc-text">1. 使用 ID 进行获取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8-CSS-%E9%80%89%E6%8B%A9%E5%99%A8%E8%BF%9B%E8%A1%8C%E8%8E%B7%E5%8F%96"><span class="toc-number">6.2.</span> <span class="toc-text">2. 使用 CSS 选择器进行获取</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-DOM-%E8%BF%9B%E9%98%B6%E4%B9%8B%E4%BF%AE%E6%94%B9-DOM-%E5%85%83%E7%B4%A0"><span class="toc-number">7.</span> <span class="toc-text">0x04 DOM 进阶之修改 DOM 元素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E5%AD%90%E5%85%83%E7%B4%A0"><span class="toc-number">7.1.</span> <span class="toc-text">枚举子元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-%E4%BF%AE%E6%94%B9%E6%96%87%E6%9C%AC%E5%86%85%E5%AE%B9"><span class="toc-number">7.2.</span> <span class="toc-text">获取&#x2F;修改文本内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-%E4%BF%AE%E6%94%B9%E5%85%83%E7%B4%A0-CSS"><span class="toc-number">7.3.</span> <span class="toc-text">获取&#x2F;修改元素 CSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E%E5%AD%90%E5%85%83%E7%B4%A0"><span class="toc-number">7.4.</span> <span class="toc-text">新增子元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%AF%B9%E8%B1%A1"><span class="toc-number">7.5.</span> <span class="toc-text">删除对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-%E5%88%A0%E9%99%A4%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%E5%99%A8"><span class="toc-number">7.6.</span> <span class="toc-text">添加&#x2F;删除事件监听器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E9%BC%A0%E6%A0%87%E7%82%B9%E5%87%BB"><span class="toc-number">7.7.</span> <span class="toc-text">模拟鼠标点击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC"><span class="toc-number">8.</span> <span class="toc-text">0x05 第一个油猴脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E4%BF%A1%E6%81%AF"><span class="toc-number">8.1.</span> <span class="toc-text">元信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%8C%BA%E5%9F%9F"><span class="toc-number">8.2.</span> <span class="toc-text">代码区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8A%9F%E8%83%BD"><span class="toc-number">8.3.</span> <span class="toc-text">实现功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-%E8%84%9A%E6%9C%AC%E5%AE%9E%E6%88%98%EF%BC%8CAuto-Sub3"><span class="toc-number">9.</span> <span class="toc-text">0x06 脚本实战，Auto_Sub3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E5%8A%9F%E8%83%BD"><span class="toc-number">9.1.</span> <span class="toc-text">脚本功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E4%BF%A1%E6%81%AF-1"><span class="toc-number">9.2.</span> <span class="toc-text">元信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%80%BB%E8%A7%88"><span class="toc-number">9.3.</span> <span class="toc-text">代码总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E8%B0%83%E8%AF%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">9.4.</span> <span class="toc-text">脚本调试模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">9.5.</span> <span class="toc-text">代码详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E5%85%A5%E5%8F%A3"><span class="toc-number">9.5.1.</span> <span class="toc-text">脚本入口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#loadCFG-saveCFG-%E8%AF%BB%E5%86%99%E9%85%8D%E7%BD%AE"><span class="toc-number">9.5.2.</span> <span class="toc-text">loadCFG&#x2F;saveCFG - 读写配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#addBtns-%E6%B7%BB%E5%8A%A0-GUI"><span class="toc-number">9.5.3.</span> <span class="toc-text">addBtns - 添加 GUI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#autoRoll-%E8%87%AA%E5%8A%A8-3"><span class="toc-number">9.5.4.</span> <span class="toc-text">autoRoll - 自动-3</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E5%B0%BE"><span class="toc-number">10.</span> <span class="toc-text">结尾</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/5f510e8f.html" title="el-table底部滚动条无法拖动问题解决"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092218362.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="el-table底部滚动条无法拖动问题解决"/></a><div class="content"><a class="title" href="/posts/5f510e8f.html" title="el-table底部滚动条无法拖动问题解决">el-table底部滚动条无法拖动问题解决</a><time datetime="2023-02-08T06:57:00.000Z" title="发表于 2023-02-08 14:57:00">2023-02-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/63b8f629.html" title="在Vue中实现拖拽功能"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302061551358.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="在Vue中实现拖拽功能"/></a><div class="content"><a class="title" href="/posts/63b8f629.html" title="在Vue中实现拖拽功能">在Vue中实现拖拽功能</a><time datetime="2023-02-06T07:47:23.000Z" title="发表于 2023-02-06 15:47:23">2023-02-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/14824453.html" title="使用watermark.js给网页添加水印"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302061543556.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用watermark.js给网页添加水印"/></a><div class="content"><a class="title" href="/posts/14824453.html" title="使用watermark.js给网页添加水印">使用watermark.js给网页添加水印</a><time datetime="2023-02-06T07:41:26.000Z" title="发表于 2023-02-06 15:41:26">2023-02-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/67c97ff3.html" title="浏览器调用摄像头获取媒体流，并实现拍照功能"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302021655431.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="浏览器调用摄像头获取媒体流，并实现拍照功能"/></a><div class="content"><a class="title" href="/posts/67c97ff3.html" title="浏览器调用摄像头获取媒体流，并实现拍照功能">浏览器调用摄像头获取媒体流，并实现拍照功能</a><time datetime="2022-12-30T11:13:48.000Z" title="发表于 2022-12-30 19:13:48">2022-12-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a913bf31.html" title="前端实现Excel表格上传解析与导出"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302021655432.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端实现Excel表格上传解析与导出"/></a><div class="content"><a class="title" href="/posts/a913bf31.html" title="前端实现Excel表格上传解析与导出">前端实现Excel表格上传解析与导出</a><time datetime="2022-12-16T10:32:16.000Z" title="发表于 2022-12-16 18:32:16">2022-12-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="footer-box"><div class="copyright">&copy;2020 - 2023 By <a class="author">WHY</a></div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script data-pjax type="text/javascript" src="/js/util.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
