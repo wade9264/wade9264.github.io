@@ -1,3 +1,10 @@
+#post strong {
+  padding: 1px 5px 3px 5px;
+  margin: 0 3px;
+  border-radius: 3px;
+  color: var(--heo-white);
+  background-color: var(--heo-theme);
+}
 #post {
   flex: 1;
 }
@@ -311,7 +318,7 @@ a.article-meta__tags::before {
   position: relative;
   opacity: 0.4;
   margin-right: 0.15em;
-  font-size: 80%;
+  font-size: 60%;
   font-family: "Font Awesome 6 Free";
 }
 #recent-posts
@@ -334,6 +341,10 @@ a.article-meta__tags::before {
   #recent-posts > .recent-post-item > .recent-post-info > a.article-title {
     font-size: 1rem;
     -webkit-line-clamp: 1;
+  }
+  #recent-posts > .recent-post-item > .recent-post-info > .article-meta-wrap,
+  .post-meta-date time {
+    font-size: 0.7rem;
   }
 }
 /* #post a:hover {
