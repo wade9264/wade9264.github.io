@@ -267,7 +267,9 @@ a::after {
 #page .page-title {
   display: none;
 } */
-
+#article-container a.tag-Link:hover {
+  color: #60a0e0;
+}
 #article-container .tag-Link {
   background: var(--heo-secondbg);
   border-radius: 8px !important;
@@ -280,8 +282,9 @@ a::after {
 }
 
 #article-container .tag-Link:hover {
-  border: var(--style-border-hover);
-  background: var(--heo-gray-op);
+  /* border-color: var(--hltools-color); */
+  background: var(--hltools-bg);
+  /* background: unset; */
 }
 
 #article-container .tag-Link .tag-link-tips {
@@ -293,7 +296,7 @@ a::after {
 }
 
 #article-container .tag-Link:hover .tag-link-tips {
-  color: var(--heo-white);
+  color: var(--hltools-color);
 }
 
 #article-container .tag-Link .tag-link-bottom {
@@ -308,7 +311,7 @@ a::after {
   min-width: 60px;
   height: 60px;
   background-size: cover;
-  border-radius: 30px;
+  /* border-radius: 30px; */
 }
 
 #article-container .tag-Link .tag-link-bottom .tag-link-right {
@@ -319,7 +322,6 @@ a::after {
   font-size: 1rem;
   line-height: 1.2;
 }
-
 #article-container
   .tag-Link
   .tag-link-bottom
@@ -336,7 +338,7 @@ a::after {
   .tag-link-bottom
   .tag-link-right
   .tag-link-sitename {
-  color: var(--heo-white);
+  color: var(--hltools-color);
 }
 
 #article-container .tag-Link .tag-link-bottom i {
@@ -466,7 +468,7 @@ a.tag-Link {
   border-radius: 12px;
   min-width: 140px;
   min-height: 80px;
-  background: var(--heo-secondbg);
+  background: var(--hl-bg);
 }
 .article-sort-item-img img {
   width: 100%;

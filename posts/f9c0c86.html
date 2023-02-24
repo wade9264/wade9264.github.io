@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>打印时元素背景颜色丢失 | WHY's Blog</title><meta name="author" content="WHY"><meta name="copyright" content="WHY"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="问题在页面上元素有背景颜色，但部分浏览器在打印时，有背景颜色丢失的情况 解决方法给要打印背景的元素添加样式 123456&#x2F;&#x2F; Chrome-webkit-print-color-adjust: exact;&#x2F;&#x2F; Firefoxprint-color-adjust: exact;color-adjust: exact;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="打印时元素背景颜色丢失">
+<meta property="og:url" content="https://wade9264.github.io/posts/f9c0c86.html">
+<meta property="og:site_name" content="WHY&#39;s Blog">
+<meta property="og:description" content="问题在页面上元素有背景颜色，但部分浏览器在打印时，有背景颜色丢失的情况 解决方法给要打印背景的元素添加样式 123456&#x2F;&#x2F; Chrome-webkit-print-color-adjust: exact;&#x2F;&#x2F; Firefoxprint-color-adjust: exact;color-adjust: exact;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png">
+<meta property="article:published_time" content="2023-02-22T07:03:59.000Z">
+<meta property="article:modified_time" content="2023-02-24T08:18:16.429Z">
+<meta property="article:author" content="WHY">
+<meta property="article:tag" content="CSS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://wade9264.github.io/posts/f9c0c86.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '打印时元素背景颜色丢失',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-24 16:18:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/theme.css?v1"><link rel="stylesheet" href="/css/style.css?v1"><link rel="stylesheet" href="/css/nav.css?v1"><link rel="stylesheet" href="/css/page.css?v1"><link rel="stylesheet" href="/css/post.css?v1"><link rel="stylesheet" href="/css/about.css?v1"><link rel="stylesheet" href="/css/movies.css?v1"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-double-row-display@1.00/cardlistpost.min.css"/>
+<style>#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags:before {content:"\A";
+  white-space: pre;}#recent-posts > .recent-post-item >.recent-post-info > .article-meta-wrap > .tags > .article-meta__separator{display:none}</style>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="WHY's Blog" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="/css/progress_bar.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js/pace.min.js"></script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><span> 文库</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><span> 工具</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 我的</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png')"><nav class="fixed" id="nav"><span id="blog-info"><a href="/" title="WHY's Blog"></a></span><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="back-home-button-icon fas fa-grip-vertical"></i></div><a id="site-name" href="/" title="首页"><i class="heoicon icon-heologo"></i><i class="fa-solid fa-house"></i></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><span> 文库</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/tools/"><span> 工具</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 我的</span></a></div></div></div><div id="nav-right"><div class="nav-button" id="search-button"><a class="site-page social-icon search" title="搜索"><i class="fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="mode-button"><a class="site-page" title="浅色和深色模式转换" onclick="switchDarkMode()"><i class="fa-solid fa-moon"></i></a></div><div class="nav-button" id="top-button"><a class="site-page" title="回到顶部" onclick="btf.scrollToDest(0,500)"><i class="fa-solid fa-angles-up"></i></a></div></div></div></nav><div class="coverdiv loaded" id="coverdiv"><img class="nolazyload entered loading" id="post-cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png" alt="cover" data-ll-status="loading"></div><div id="post-info"><div class="meta-firstline"><a class="post-meta-categories" href="/categories/%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/">问题汇总</a><span class="post-meta-separator"></span><div class="post-meta-tags-list"><a class="post-meta-tags" href="/tags/CSS/">CSS</a><span class="post-meta-separator">       </span></div></div><h1 class="post-title">打印时元素背景颜色丢失</h1><div class="meta-secondline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2023-02-22T07:03:59.000Z" title="发表于 2023-02-22 15:03:59">2023-02-22</time></span><span class="post-meta-pv-cv" id="" data-flag-title="打印时元素背景颜色丢失"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在页面上元素有背景颜色，但<code>部分浏览器</code>在打印时，有背景颜色丢失的情况</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>给要打印背景的元素添加样式</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Chrome</span><br><span class="line">-webkit-print-<span class="attribute">color</span>-adjust: exact;</span><br><span class="line"></span><br><span class="line">// Firefox</span><br><span class="line">print-<span class="attribute">color</span>-adjust: exact;</span><br><span class="line"><span class="attribute">color</span>-adjust: exact;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://wade9264.github.io">WHY</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://wade9264.github.io/posts/f9c0c86.html">https://wade9264.github.io/posts/f9c0c86.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://wade9264.github.io" target="_blank">WHY's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CSS/">CSS</a></div><div class="post_share"><div class="social-share" data-image="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/5313352d.html" title="前端单元测试"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302231722187.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">前端单元测试</div></div></a></div><div class="next-post pull-right"><a href="/posts/a0414938.html" title="Vue离开或刷新页面弹窗提示"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221031872.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Vue离开或刷新页面弹窗提示</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/fdb7b858.html" title="Vue添加进入、离开、列表过渡动画"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302092218367.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-06-03</div><div class="title">Vue添加进入、离开、列表过渡动画</div></div></a></div><div><a href="/posts/38c6db38.html" title="文字过长超出时显示省略号"><img class="cover" src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302151917180.jfif" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-21</div><div class="title">文字过长超出时显示省略号</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WHY</div><div class="author-info__description">记录，成为更好的自己</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">解决方法</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/ca81d416.html" title="JS数据结构与算法"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302241526909.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JS数据结构与算法"/></a><div class="content"><a class="title" href="/posts/ca81d416.html" title="JS数据结构与算法">JS数据结构与算法</a><time datetime="2023-02-24T07:28:03.000Z" title="发表于 2023-02-24 15:28:03">2023-02-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/5313352d.html" title="前端单元测试"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302231722187.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端单元测试"/></a><div class="content"><a class="title" href="/posts/5313352d.html" title="前端单元测试">前端单元测试</a><time datetime="2023-02-23T09:17:07.000Z" title="发表于 2023-02-23 17:17:07">2023-02-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/f9c0c86.html" title="打印时元素背景颜色丢失"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221506889.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="打印时元素背景颜色丢失"/></a><div class="content"><a class="title" href="/posts/f9c0c86.html" title="打印时元素背景颜色丢失">打印时元素背景颜色丢失</a><time datetime="2023-02-22T07:03:59.000Z" title="发表于 2023-02-22 15:03:59">2023-02-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a0414938.html" title="Vue离开或刷新页面弹窗提示"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221031872.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vue离开或刷新页面弹窗提示"/></a><div class="content"><a class="title" href="/posts/a0414938.html" title="Vue离开或刷新页面弹窗提示">Vue离开或刷新页面弹窗提示</a><time datetime="2023-02-22T02:26:39.000Z" title="发表于 2023-02-22 10:26:39">2023-02-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/e2d9dacd.html" title="大文件上传和断点续传"><img src="https://wade1999-images-1307558348.cos.ap-shanghai.myqcloud.com/202302221021792.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大文件上传和断点续传"/></a><div class="content"><a class="title" href="/posts/e2d9dacd.html" title="大文件上传和断点续传">大文件上传和断点续传</a><time datetime="2023-02-22T02:18:48.000Z" title="发表于 2023-02-22 10:18:48">2023-02-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="footer-box"><div class="copyright">&copy;2020 - 2023 By <a class="author">WHY</a></div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script data-pjax type="text/javascript" src="/js/util.js"></script><script async src="https://cdn.jsdelivr.net/npm/js-heo@1.0.11/categoryBar/categoryBar.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
